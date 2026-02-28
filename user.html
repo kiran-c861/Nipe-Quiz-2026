@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - NIPE QUIZ</title>
+  <meta name="description" content="NIPE Quiz Student Dashboard — join a quiz using a room code.">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="user">
+  <!-- DB Loading Overlay -->
+  <div id="db-loader" class="db-loader hidden">
+    <div class="db-loader-inner">
+      <div class="db-spinner"></div>
+      <p>Connecting to Firebase...</p>
+    </div>
+  </div>
+
+  <nav class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="NIPE Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      NIPE QUIZ Portal
+    </div>
+    <div class="nav-links">
+      <span id="user-welcome" style="font-weight: 600;"></span>
+      <button onclick="logout()" class="btn secondary-btn small-btn">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Congratulations Banner -->
+  <div id="congrats-banner" class="congrats-banner hidden">
+    <div class="congrats-inner">
+      <div class="congrats-emoji">🎉</div>
+      <h2>Congratulations!</h2>
+      <p>You have been selected for the <strong>Next Round!</strong></p>
+      <div class="congrats-team" id="congrats-names"></div>
+      <p class="congrats-sub">Your instructor has reviewed your performance and selected your team. Keep up the great
+        work!</p>
+    </div>
+  </div>
+
+  <main class="container center-layout">
+    <div class="card join-card">
+      <h2>Enter Quiz Code</h2>
+      <p class="text-muted" style="margin-bottom: 2rem;">Please enter the 6-digit code provided by your administrator to
+        join the quiz.</p>
+
+      <div class="form-group code-input-group">
+        <input type="text" id="join-code" placeholder="XXXXXX" maxlength="6" autocomplete="off">
+        <button onclick="findQuiz()" class="btn primary-btn">Find Quiz</button>
+      </div>
+      <p id="join-error" class="error-msg"></p>
+
+      <div id="quiz-info-card" class="info-card hidden">
+        <h3 id="qi-title"></h3>
+        <div class="qi-metadata">
+          <p><strong>Duration:</strong> <span id="qi-duration"></span> mins</p>
+          <p><strong>Scheduled Start:</strong> <span id="qi-start"></span></p>
+        </div>
+        <div id="countdown-container" class="countdown-box hidden">
+          <p>Quiz starts in</p>
+          <h2 id="countdown-timer">00:00:00</h2>
+        </div>
+        <div style="margin-top: 2rem;">
+          <button id="start-quiz-btn" onclick="startQuiz()" class="btn success-btn large-btn hidden">Start Quiz
+            Now</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

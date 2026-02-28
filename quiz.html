@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Running - NIPE QUIZ Portal</title>
+  <meta name="description" content="NIPE Quiz — active quiz session for students.">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="quiz">
+  <!-- DB Loading Overlay -->
+  <div id="db-loader" class="db-loader hidden">
+    <div class="db-loader-inner">
+      <div class="db-spinner"></div>
+      <p>Connecting to Firebase...</p>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar quiz-nav">
+    <div class="nav-logo-area">
+      <img src="logo.png" alt="NIPE Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      <span id="quiz-running-title" class="quiz-title-label">Loading...</span>
+    </div>
+    <div class="timer-display" id="timer-box">
+      <span class="timer-icon">⏱</span>
+      <span id="quiz-time-left">00:00</span>
+    </div>
+  </nav>
+
+  <!-- Progress Bar -->
+  <div class="quiz-progress-bar-wrap">
+    <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
+  </div>
+
+  <main class="container quiz-container">
+
+    <!-- Quiz Card -->
+    <div id="quiz-area" class="card quiz-card">
+
+      <div class="quiz-header">
+        <div class="q-badge" id="question-number">Q1</div>
+        <span id="question-progress" class="q-progress-label">1 / ?</span>
+      </div>
+
+      <div class="q-nav-dots" id="q-nav-dots"></div>
+      <div class="question-text" id="question-text">Loading...</div>
+      <div class="options-list" id="options-container"></div>
+
+      <div class="quiz-actions">
+        <button id="prev-btn" class="btn secondary-btn" onclick="navQuestion(-1)">← Previous</button>
+        <button id="next-btn" class="btn primary-btn" onclick="navQuestion(1)">Next →</button>
+        <button id="submit-btn" class="btn success-btn hidden" onclick="submitQuiz()">✔ Submit Quiz</button>
+      </div>
+    </div>
+
+    <!-- Submission Confirmation -->
+    <div id="submitted-area" class="card result-card hidden">
+      <div class="submitted-checkmark">✅</div>
+      <h2 class="submitted-title">Quiz Submitted!</h2>
+      <p class="submitted-msg">
+        Your responses have been recorded successfully.<br>
+        Results will be reviewed and announced by your instructor.
+      </p>
+      <div class="submitted-info" id="submitted-info-box"></div>
+      <button onclick="goToDashboard()" class="btn primary-btn large-btn mt-2" style="max-width:300px;">
+        Return to Home
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

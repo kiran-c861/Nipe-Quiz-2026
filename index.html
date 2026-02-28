@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIPE QUIZ Portal - Login</title>
+  <meta name="description" content="NIPE Quiz Portal — Student and Admin login for quiz sessions.">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="login">
+  <nav class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="NIPE Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      NIPE QUIZ Portal
+    </div>
+  </nav>
+
+  <main class="container center-layout">
+    <div class="card login-card">
+      <div class="tabs">
+        <button type="button" class="tab-btn active" onclick="switchTab('user')">Student Login</button>
+        <button type="button" class="tab-btn" onclick="switchTab('admin')">Admin Login</button>
+      </div>
+
+      <!-- Student Login -->
+      <form id="user-login-form" class="login-form active">
+        <h2>Student Login</h2>
+        <p class="text-muted" style="margin-bottom:1.5rem;">Two students share one browser session. Both USNs and Names
+          are required.</p>
+
+        <fieldset class="student-fieldset">
+          <legend>Student 1</legend>
+          <div class="form-group">
+            <label for="usn1">USN (e.g. NU23UCA090)</label>
+            <input type="text" id="usn1" required placeholder="Enter full USN" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="name1">Full Name</label>
+            <input type="text" id="name1" required placeholder="Enter student name" autocomplete="off">
+          </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+          <legend>Student 2</legend>
+          <div class="form-group">
+            <label for="usn2">USN (e.g. NU23UCA091)</label>
+            <input type="text" id="usn2" required placeholder="Enter full USN" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="name2">Full Name</label>
+            <input type="text" id="name2" required placeholder="Enter student name" autocomplete="off">
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn primary-btn large-btn mt-2">Login to Dashboard</button>
+        <p id="user-error" class="error-msg"></p>
+      </form>
+
+      <!-- Admin Login -->
+      <form id="admin-login-form" class="login-form">
+        <h2>Admin Login</h2>
+        <div class="form-group">
+          <label for="admin-password">Administrator Password</label>
+          <div class="pw-wrapper">
+            <input type="password" id="admin-password" required placeholder="Enter password" autocomplete="off">
+            <button type="button" class="pw-toggle" onclick="togglePw()" tabindex="-1"
+              aria-label="Show/hide password">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn primary-btn large-btn mt-2">Access Panel</button>
+        <p id="admin-error" class="error-msg"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - NIPE QUIZ</title>
+  <meta name="description" content="NIPE Quiz Admin Dashboard — create quizzes, manage results, and select winners.">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="admin">
+  <!-- DB Loading Overlay -->
+  <div id="db-loader" class="db-loader hidden">
+    <div class="db-loader-inner">
+      <div class="db-spinner"></div>
+      <p>Connecting to Firebase...</p>
+    </div>
+  </div>
+
+  <nav class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="NIPE Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      NIPE QUIZ Portal
+    </div>
+    <div class="nav-links">
+      <span id="db-status-badge" class="db-status-badge db-status-checking">⏳ Connecting...</span>
+      <span style="font-weight:600; color: var(--primary);">Administrator</span>
+      <button onclick="logout()" class="btn secondary-btn small-btn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="container admin-layout">
+
+    <!-- TABS -->
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" onclick="showAdminTab('create')">➕ Create Quiz</button>
+      <button class="admin-tab-btn" onclick="showAdminTab('quizzes')">📋 Manage Quizzes</button>
+      <button class="admin-tab-btn" onclick="showAdminTab('results')">📊 View Results</button>
+    </div>
+
+    <!-- CREATE QUIZ -->
+    <section id="tab-create" class="card admin-tab-section">
+      <h2>Create New Quiz</h2>
+      <form id="create-quiz-form">
+        <div class="form-group line-group">
+          <div>
+            <label>Quiz Title</label>
+            <input type="text" id="quiz-title" required placeholder="e.g. Internal Assessment 1" autocomplete="off">
+          </div>
+          <div>
+            <label>Start Date &amp; Time</label>
+            <input type="datetime-local" id="quiz-start" required>
+          </div>
+          <div>
+            <label>Duration (minutes)</label>
+            <input type="number" id="quiz-duration" min="1" required placeholder="e.g. 30">
+          </div>
+        </div>
+
+        <h3 class="mt-2 section-title">Questions</h3>
+
+        <!-- CSV UPLOAD ZONE -->
+        <div class="csv-upload-zone" id="csv-drop-zone">
+          <div class="csv-upload-icon">📄</div>
+          <p class="csv-upload-title">Upload Questions via CSV</p>
+          <p class="csv-upload-hint">
+            Drag &amp; drop a <code>.csv</code> file here, or
+            <label for="csv-file-input" class="csv-browse-link">browse to choose a file</label>
+          </p>
+          <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvFile(this.files[0])">
+          <div class="csv-format-info">
+            <strong>Required CSV format (one row per question):</strong>
+            <code class="csv-format-example">Question Text,Option A,Option B,Option C,Option D,Correct (A/B/C/D)</code>
+            <button type="button" class="btn secondary-btn small-btn" onclick="downloadSampleCsv()"
+              style="margin-top:0.75rem;">
+              ⬇ Download Sample CSV
+            </button>
+          </div>
+          <div id="csv-status" class="csv-status hidden"></div>
+        </div>
+
+        <!-- Manual entry -->
+        <div id="questions-container"></div>
+        <button type="button" class="btn secondary-btn mt-2" onclick="addQuestionUI()">+ Add Question Manually</button>
+
+        <div class="mt-2 text-center" style="border-top:1px solid var(--border); padding-top:2rem;">
+          <button type="submit" class="btn primary-btn large-btn">Save Quiz &amp; Generate Code</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- MANAGE QUIZZES -->
+    <section id="tab-quizzes" class="card admin-tab-section hidden">
+      <h2>All Quizzes</h2>
+      <div id="quiz-list" class="quiz-list"></div>
+    </section>
+
+    <!-- VIEW RESULTS -->
+    <section id="tab-results" class="card admin-tab-section hidden">
+      <h2>Submission Results</h2>
+      <p class="text-muted">All student submissions are listed below. Students cannot access this page.</p>
+      <div id="results-container"></div>
+    </section>
+
+  </main>
+
+  <!-- Code Reveal Modal -->
+  <div id="code-modal" class="modal">
+    <div class="modal-content card">
+      <h2>Quiz Created Successfully! 🎉</h2>
+      <p>Share this code with the students:</p>
+      <h1 id="generated-quiz-code" class="highlight-code">------</h1>
+      <p class="text-muted" style="margin-bottom:2rem;">This code is also visible in the Manage Quizzes tab.</p>
+      <button onclick="closeModal()" class="btn primary-btn large-btn">Got it</button>
+    </div>
+  </div>
+
+  <!-- Edit Quiz Time Modal -->
+  <div id="edit-time-modal" class="modal">
+    <div class="modal-content card" style="max-width:440px;">
+      <h2>✎ Edit Quiz Schedule</h2>
+      <p class="text-muted" style="margin-bottom:1.5rem;">Update the start time and duration. The room code and
+        questions are unchanged.</p>
+      <input type="hidden" id="edit-quiz-id">
+      <div class="form-group">
+        <label for="edit-quiz-start">New Start Date &amp; Time</label>
+        <input type="datetime-local" id="edit-quiz-start" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-quiz-duration">New Duration (minutes)</label>
+        <input type="number" id="edit-quiz-duration" min="1" required placeholder="e.g. 30">
+      </div>
+      <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+        <button onclick="saveQuizTime()" class="btn success-btn" style="flex:1;">Save Changes</button>
+        <button onclick="closeEditTimeModal()" class="btn secondary-btn" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
