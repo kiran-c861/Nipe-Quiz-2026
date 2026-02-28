@@ -108,7 +108,9 @@ function checkAuth() {
     const page = document.body.getAttribute('data-page');
     const session = Session.get();
     if (page === 'login') {
-        if (session) window.location.href = (session.role === 'admin') ? 'admin.html' : 'user.html';
+        // Always show login page — clear any old session so index.html is always the start
+        Session.clear();
+        QuizState.clear();
     } else {
         if (!session) { window.location.href = 'index.html'; return; }
         if (page === 'admin' && session.role !== 'admin') window.location.href = 'user.html';
